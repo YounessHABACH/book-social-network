@@ -1,17 +1,31 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:latest
-    container_name: full-postgres
+    container_name: postgres-bsn
+    image: postgres
     environment:
+      POSTGRES_DB: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: db
-    ports:
-      - "5432:5432"
+      PGDATA: /var/lib/postgresql/data
     volumes:
-      - full-postgres-volume:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - bsn-network
+    restart: unless-stopped
+
+  mail-dev:
+    container_name: maildev-bsn
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
 
 volumes:
-  full-postgres-volume:
+  postgres-data:
+    driver: local
+
+networks:
+  bsn-network:
+    driver: bridge
