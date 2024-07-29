@@ -1,4 +1,4 @@
-package com.ynshb.role;
+package com.ynshb.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

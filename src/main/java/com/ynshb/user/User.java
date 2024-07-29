@@ -1,7 +1,7 @@
-package com.ynshb.role;
+package com.ynshb.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ynshb.user.Role;
+import com.ynshb.role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
