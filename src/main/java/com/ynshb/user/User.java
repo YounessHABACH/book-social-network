@@ -1,23 +1,21 @@
 package com.ynshb.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ynshb.book.Book;
+import com.ynshb.history.BookTransactionHistory;
 import com.ynshb.role.Role;
+import com.ynshb.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,20 +27,22 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails, Principal {
+public class User extends BaseEntity implements UserDetails, Principal {
 
-    @Id
-    @GeneratedValue
-    private Long id;
     private String firstname;
     private String lastname;
     private LocalDate birthdate;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    @OneToMany(mappedBy = "user")
+    List<BookTransactionHistory> histories;
 
     // Security
     @Column(unique = true)
@@ -53,14 +53,6 @@ public class User implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Role> roles;
-
-    // Auditing
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDate createdDate;
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDate lastModifiedDate;
 
     @Override
     public String getName() {

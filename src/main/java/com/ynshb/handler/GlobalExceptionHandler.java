@@ -1,6 +1,7 @@
 package com.ynshb.handler;
 
 
+import com.ynshb.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -98,6 +99,18 @@ public class GlobalExceptionHandler {
         log.error("handle general exception - Internal Error: ", exp);
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
+                .body(
+                        ExceptionResponse.builder()
+                                .businessErrorDescription("Internal Error: Contact admin")
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(OperationNotPermittedException.class)
+    public ResponseEntity<ExceptionResponse> handleOperationNotPermittedException(OperationNotPermittedException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
                 .body(
                         ExceptionResponse.builder()
                                 .businessErrorDescription("Internal Error: Contact admin")
